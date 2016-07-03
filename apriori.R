@@ -20,7 +20,8 @@ Apriori<-function(data_set, threshold=50){
           for(possibilities in 1:length(tempo_fac)){
             
             if(sum(data_set[,col]==tempo_fac[possibilities], na.rm=TRUE) >= threshold)
-              pattern <- c(pattern, as.character(tempo[possibilities]));
+              pattern <- c(pattern, paste(names(data_set)[col], 
+                                          " = ", as.character(tempo_fac[possibilities])));
             
           }
         }
@@ -31,7 +32,8 @@ Apriori<-function(data_set, threshold=50){
           for(possibilities in 1:length(tempo_num)){
             
             if(sum(data_set[,col]==tempo_num[possibilities], na.rm=TRUE) >= threshold)
-              pattern <- c(pattern, as.character(tempo_num[possibilities]));
+              pattern <- c(pattern, paste(names(data_set)[col], 
+                                          " = ", as.character(tempo_num[possibilities])));
             
           }
           
@@ -41,6 +43,6 @@ Apriori<-function(data_set, threshold=50){
     }
     
   }
-  
+  pattern
   
 }
