@@ -8,20 +8,21 @@ Apriori<-function(data_set, threshold=50){
   candidates_new = list();#new candidates
   candidates_1 = list();#candidates with size 1 to generate patterns
   tempo_fac = factor();
+  tempo_string = character();
   
-  for(size_pat in 1:sx){
+  for(size_pat in 1:3){
     
     if(size_pat ==1){
       
       for(col in 1:sx){
+        
+        tempo_fac <- as.factor(levels(data_fac[,col]));
+        
+        for(possibilities in 1:length(tempo_fac)){
           
-          tempo_fac <- as.factor(levels(data_fac[,col]));
-          
-          for(possibilities in 1:length(tempo_fac)){
-            
-            if(sum(data_fac[,col]==tempo_fac[possibilities], na.rm=TRUE) >= threshold){
-              pattern <- c(pattern, paste(names(data_fac)[col], 
-                                          " = ", as.character(tempo_fac[possibilities])));
+          if(sum(data_fac[,col]==tempo_fac[possibilities], na.rm=TRUE) >= threshold){
+            pattern <- c(pattern, paste(names(data_fac)[col], 
+                                        " = ", as.character(tempo_fac[possibilities])));
               candidates_old <- c(candidates_old, list(list(col, tempo_fac[possibilities])));
               candidates_1 = candidates_old;
             }
@@ -44,8 +45,8 @@ Apriori<-function(data_set, threshold=50){
             }
             tempo_fac <- tempo_fac[tempo_fac[,candidates_1[[cand1]][[1]]]==candidates_1[[cand1]][[2]],];
             if(nrow(tempo_fac)>= threshold){#the pattern has to be added
-              candidates_new <- c(candidates_new, list(c(candidates_old[[cand]][[1]], candidates_1[[cand1]][[1]]), 
-                                                       c(candidates_old[[cand]][[2]], candidates_1[[cand1]][[2]])));
+              candidates_new <- c(candidates_new, list(list(c(candidates_old[[cand]][[1]], candidates_1[[cand1]][[1]]), 
+                                                       factor(c(as.character(candidates_old[[cand]][[2]]), as.character(candidates_1[[cand1]][[2]]))))));
             }
             
           }
@@ -58,19 +59,17 @@ Apriori<-function(data_set, threshold=50){
       candidates_new <- list();
       
       for(pat in 1:length(candidates_old)){
-        for(col in candidates_old[[pat]][1]){
-         pattern <- c(pattern, paste(names(data_fac[,col])[col], 
-                            " = ", as.character(candidates_old[[pat]][[2]][candidates_old[[pat]][[1]]==col]), " "));
-      
+        for(col in candidates_old[[pat]][[1]]){
+          tempo_string <- paste(tempo_string, names(data_fac)[col], 
+                                "=", as.character(candidates_old[[pat]][[2]][candidates_old[[pat]][[1]]==col]));
+          
         }
-        if(pat !=1){
-          pattern <- c(pattern, " / ");
-        }
+        pattern <- c(pattern, tempo_string);
+        tempo_string = character();
+      }
       
-    }
     
   }
-  pattern
-  
   }
+  pattern
 }
